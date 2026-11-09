@@ -3,93 +3,114 @@ import pandas as pd
 from datetime import datetime
 
 # Page Configuration
-st.set_page_config(page_title="Fraud & Loss Control Investigation Report - Enterprise", layout="wide")
+st.set_page_config(page_title="Fraud & Loss Control Investigation Report", layout="wide")
 
-# Custom CSS for Enterprise Mastercard Portal Style
+# Custom CSS for Sleek Enterprise Fintech UI (Inspired by Threat Intel Portals)
 st.markdown("""
     <style>
-    /* Main Background & Clean Typography */
+    /* Global App Background & Font */
     .stApp {
-        background-color: #f8fafc;
+        background-color: #0b0f19;
+        color: #f1f5f9;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Enterprise Header Styling */
-    .enterprise-header {
-        background: #0f172a;
-        padding: 24px 32px;
-        border-radius: 8px;
-        color: white;
+    /* Top Enterprise Banner */
+    .fintech-header {
+        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #374151;
+        border-left: 6px solid #f59e0b;
         margin-bottom: 30px;
-        border-left: 6px solid #2563eb;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     }
     
-    .enterprise-header h1 {
+    .fintech-header h1 {
         color: #ffffff;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 700;
-        margin: 0 0 8px 0;
-        border: none;
-        padding: 0;
+        margin: 0 0 6px 0;
+        letter-spacing: -0.5px;
     }
     
-    .enterprise-header p {
-        color: #94a3b8;
-        font-size: 14px;
+    .fintech-header p {
+        color: #9ca3af;
+        font-size: 13px;
         margin: 0;
-        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    /* Section Headings */
+    /* Section Headers Styling */
     h2 {
-        color: #1e293b;
-        font-size: 20px;
+        color: #f3f4f6;
+        font-size: 18px;
         font-weight: 600;
-        border-bottom: 2px solid #e2e8f0;
-        padding-bottom: 8px;
-        margin-top: 30px;
+        border-bottom: 1px solid #374151;
+        padding-bottom: 10px;
+        margin-top: 35px;
+        letter-spacing: 0.5px;
     }
     
     h3 {
-        color: #334155;
-        font-size: 16px;
+        color: #e5e7eb;
+        font-size: 15px;
     }
     
-    /* Metrics / Info Box Styling */
-    .stInfo {
-        background-color: #eff6ff;
-        border-left: 4px solid #3b82f6;
-        color: #1e3a8a;
-        border-radius: 4px;
-    }
-    
-    /* Button Styling */
-    .stButton>button {
-        background-color: #0f172a;
-        color: white;
-        font-weight: 600;
-        border-radius: 6px;
-        border: none;
-        padding: 10px 24px;
-        transition: all 0.2s ease;
-    }
-    .stButton>button:hover {
-        background-color: #2563eb;
-        color: white;
-    }
-    
-    /* Input Fields Styling refinement */
+    /* Input Fields & Text Areas Dark Modern Theme */
     .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
-        border-radius: 6px;
-        border-color: #cbd5e1;
+        background-color: #1f2937;
+        color: #f9fafb;
+        border-radius: 8px;
+        border: 1px solid #4b5563;
+    }
+    
+    .stTextInput>div>div>input:focus, .stTextArea>div>div>textarea:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 1px #f59e0b;
+    }
+
+    /* Metric / Info Box Styling */
+    .stInfo {
+        background-color: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-left: 4px solid #f59e0b;
+        color: #fcd34d;
+        border-radius: 8px;
+    }
+    
+    /* Submit Button Styling */
+    .stButton>button {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #0b0f19;
+        font-weight: 700;
+        border-radius: 8px;
+        border: none;
+        padding: 12px 28px;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
+    
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+        color: #000000;
+    }
+    
+    /* Labels */
+    label {
+        color: #d1d5db !important;
+        font-weight: 500 !important;
+        font-size: 13px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Enterprise Header Banner
+# Sleek Enterprise Header
 st.markdown("""
-    <div class="enterprise-header">
+    <div class="fintech-header">
         <h1>FRAUD AND LOSS CONTROL INVESTIGATION REPORT</h1>
         <p>THREAT INTELLIGENCE & RISK COMPLIANCE PORTAL &nbsp;|&nbsp; <b>Investigator: Mohsen Hassan, CFE</b></p>
     </div>
@@ -129,7 +150,7 @@ with st.form("fraud_report_complete_form"):
     st.header("2. Reason for Investigation")
     reason = st.text_area(
         "Describe the event or monitoring alert that triggered the investigation:",
-        value="Monthly fraud rate exceeded the Acquirer's established threshold and notification of a compliance violation was received."
+        value="Monthly fraud rate exceeded the established risk threshold and compliance alert notification was triggered."
     )
 
     st.markdown("---")
@@ -157,11 +178,11 @@ with st.form("fraud_report_complete_form"):
     fraud_rate_val = (fraud_tx_val / total_tx_val * 100) if total_tx_val > 0 else 0.0
     cb_rate_count = (cb_count / total_tx_count * 100) if total_tx_count > 0 else 0.0
 
-    st.info(f"📊 **Calculated Threat & Risk Metrics:** Fraud Rate (Count) = **{fraud_rate_count:.2f}%** | Fraud Rate (Value) = **{fraud_rate_val:.2f}%** | Chargeback Rate = **{cb_rate_count:.2f}%**")
+    st.info(f"📊 **Calculated Threat Metrics:** Fraud Rate (Count) = **{fraud_rate_count:.2f}%** | Fraud Rate (Value) = **{fraud_rate_val:.2f}%** | Chargeback Rate = **{cb_rate_count:.2f}%**")
 
     analysis_notes = st.text_area(
         "Findings, Monitoring Alerts, Root Cause & Evidence Reviewed:",
-        value="Spike in e-commerce transactions originating from high-risk BINs. Lack of 3DS authentication implementation."
+        value="Spike in high-risk e-commerce transactions originating from anomalous BIN profiles. Lack of robust 3DS verification."
     )
 
     st.markdown("---")
@@ -173,10 +194,10 @@ with st.form("fraud_report_complete_form"):
     col_f1, col_f2 = st.columns([3, 1])
     
     with col_f1:
-        identified_issues = st.text_area("Identified Issue(s)", value="Excessive fraudulent transactions and lack of proper velocity checks.")
-        root_cause = st.text_input("Root Cause", value="Compromised payment gateway security / missing 3DS.")
-        impact = st.text_area("Impact on Merchant or Acquirer", value="Potential financial loss and exposure to scheme fines.")
-        mastercard_standards = st.text_input("Standards or Program Requirements Involved", value="SDP / Excessive Chargeback Program (ECP)")
+        identified_issues = st.text_area("Identified Issue(s)", value="Excessive fraudulent volume and absence of velocity check rules.")
+        root_cause = st.text_input("Root Cause", value="Gateway security loophole / missing 3DS integration.")
+        impact = st.text_area("Impact on Merchant or Acquirer", value="Financial exposure and potential scheme program penalties.")
+        standards_involved = st.text_input("Standards or Program Requirements Involved", value="SDP Security Guidelines / Excessive Chargeback Monitoring Program")
     
     with col_f2:
         risk_assessment = st.radio("Risk Assessment", ["Low", "Medium", "High"], index=2)
@@ -189,10 +210,10 @@ with st.form("fraud_report_complete_form"):
     st.header("5. Corrective Actions")
     st.write("Actions required or implemented to address the findings:")
     
-    action_1 = st.text_input("Action 1", value="Implement mandatory 3DS authentication")
+    action_1 = st.text_input("Action 1", value="Enforce mandatory 3DS authentication")
     status_1 = st.selectbox("Status 1", ["Pending", "Completed"], index=0, key="s1")
     
-    action_2 = st.text_input("Action 2", value="Adjustment of fraud monitoring thresholds")
+    action_2 = st.text_input("Action 2", value="Tighten real-time fraud monitoring thresholds")
     status_2 = st.selectbox("Status 2", ["Pending", "Completed"], index=1, key="s2")
 
     st.markdown("---")
@@ -203,7 +224,7 @@ with st.form("fraud_report_complete_form"):
     st.header("6. Investigation Conclusion")
     conclusion = st.text_area(
         "Conclusion Summary:",
-        value="Investigation is ongoing. Merchant is currently under temporary restriction pending 3DS integration."
+        value="Investigation active. Merchant under temporary processing restriction until 3DS remediation is verified."
     )
 
     st.markdown("---")
@@ -239,10 +260,10 @@ with st.form("fraud_report_complete_form"):
     # 9. Supporting Documentation
     # ---------------------------------------------------------
     st.header("9. Supporting Documentation")
-    docs_notes = st.text_area("Attached Evidence / Reports Reference:", value="Transaction monitoring logs, Acquirer alert history, Merchant communication records.")
+    docs_notes = st.text_area("Attached Evidence / Reports Reference:", value="Transaction logs, alert history records, merchant communications.")
 
     # Submit Button
     submitted = st.form_submit_button("💾 Save & Generate Report")
 
 if submitted:
-    st.success("✅ The Fraud Investigation Report has been successfully saved and processed by Mohsen Hassan, CFE!")
+    st.success("✅ Investigation Report successfully processed and secured by Mohsen Hassan, CFE!")
