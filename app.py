@@ -3,10 +3,11 @@ import pandas as pd
 from datetime import datetime
 
 # Page Configuration
-st.set_page_config(page_title="Fraud Investigation Report", layout="wide")
+st.set_page_config(page_title="Fraud & Loss Control Investigation Report", layout="wide")
 
-# Main Title & Header
+# Main Title & Header with Professional Branding
 st.title("🛡️ FRAUD AND LOSS CONTROL INVESTIGATION REPORT")
+st.markdown("### **Investigator:** Mohsen Hassan, CFE")
 st.caption("Report Classification: Confidential – Internal Use Only")
 st.markdown("---")
 
@@ -31,7 +32,7 @@ with st.form("fraud_report_complete_form"):
         
     with col3:
         acquirer = st.text_input("Responsible Acquirer", value="Global Acquiring Bank")
-        investigator = st.text_input("Responsible Investigator", value="Risk Analyst Team")
+        investigator = st.text_input("Responsible Investigator", value="Mohsen Hassan, CFE")
         inv_status = st.selectbox("Investigation Status", ["Open", "Under Review", "Closed"])
 
     st.markdown("---")
@@ -141,7 +142,7 @@ with st.form("fraud_report_complete_form"):
     st.header("8. Investigation Approval")
     a_col1, a_col2 = st.columns(2)
     with a_col1:
-        prepared_by = st.text_input("Prepared by (Name)", value="Risk Analyst")
+        prepared_by = st.text_input("Prepared by (Name)", value="Mohsen Hassan, CFE")
         reviewed_by = st.text_input("Reviewed by (Name)", value="Risk Manager")
     with a_col2:
         approved_by = st.text_input("Approved by (Name)", value="Head of Risk & Compliance")
@@ -158,4 +159,4 @@ with st.form("fraud_report_complete_form"):
     submitted = st.form_submit_button("💾 Save & Generate Report")
 
 if submitted:
-    st.success("✅ The Fraud Investigation Report has been successfully saved and processed!")
+    st.success("✅ The Fraud Investigation Report has been successfully saved and processed by Mohsen Hassan, CFE!")
