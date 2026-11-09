@@ -1,64 +1,82 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from fpdf import FPDF
 
 # Page Configuration
-st.set_page_config(page_title="Fraud & Loss Control Investigation Report", layout="wide")
+st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Sleek Enterprise Fintech UI (Inspired by Threat Intel Portals)
+# Custom CSS for Enterprise Dark UI (Mastercard Threat Intelligence Vibe)
 st.markdown("""
     <style>
-    /* Global App Background & Font */
     .stApp {
         background-color: #0b0f19;
         color: #f1f5f9;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Top Enterprise Banner */
-    .fintech-header {
+    /* Hero Banner */
+    .hero-banner {
         background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-        padding: 30px;
+        padding: 35px;
         border-radius: 12px;
         border: 1px solid #374151;
         border-left: 6px solid #f59e0b;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        margin-bottom: 25px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     }
     
-    .fintech-header h1 {
+    .hero-banner h1 {
         color: #ffffff;
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0 0 6px 0;
-        letter-spacing: -0.5px;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 0 10px 0;
     }
     
-    .fintech-header p {
+    .hero-banner p {
         color: #9ca3af;
-        font-size: 13px;
+        font-size: 14px;
         margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
     }
 
-    /* Section Headers Styling */
+    /* Metrics Cards Container */
+    .metric-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .metric-card {
+        background: #111827;
+        border: 1px solid #374151;
+        padding: 20px;
+        border-radius: 10px;
+        flex: 1;
+        text-align: center;
+    }
+    .metric-value {
+        color: #f59e0b;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .metric-label {
+        color: #9ca3af;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Section Headers */
     h2 {
         color: #f3f4f6;
         font-size: 18px;
         font-weight: 600;
         border-bottom: 1px solid #374151;
-        padding-bottom: 10px;
-        margin-top: 35px;
-        letter-spacing: 0.5px;
+        padding-bottom: 8px;
+        margin-top: 30px;
     }
     
-    h3 {
-        color: #e5e7eb;
-        font-size: 15px;
-    }
-    
-    /* Input Fields & Text Areas Dark Modern Theme */
+    /* Inputs & Textareas */
     .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
         background-color: #1f2937;
         color: #f9fafb;
@@ -66,204 +84,186 @@ st.markdown("""
         border: 1px solid #4b5563;
     }
     
-    .stTextInput>div>div>input:focus, .stTextArea>div>div>textarea:focus {
-        border-color: #f59e0b;
-        box-shadow: 0 0 0 1px #f59e0b;
-    }
-
-    /* Metric / Info Box Styling */
-    .stInfo {
-        background-color: rgba(245, 158, 11, 0.1);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        border-left: 4px solid #f59e0b;
-        color: #fcd34d;
-        border-radius: 8px;
-    }
-    
-    /* Submit Button Styling */
+    /* Submit / Generate PDF Button */
     .stButton>button {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: #0b0f19;
         font-weight: 700;
         border-radius: 8px;
         border: none;
-        padding: 12px 28px;
+        padding: 14px 28px;
         width: 100%;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        transition: 0.3s;
     }
-    
     .stButton>button:hover {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
         color: #000000;
     }
     
-    /* Labels */
-    label {
-        color: #d1d5db !important;
-        font-weight: 500 !important;
-        font-size: 13px !important;
-    }
+    label { color: #d1d5db !important; font-weight: 500 !important; font-size: 13px !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# Sleek Enterprise Header
+# 1. Hero Banner (Platform Style)
 st.markdown("""
-    <div class="fintech-header">
-        <h1>FRAUD AND LOSS CONTROL INVESTIGATION REPORT</h1>
-        <p>THREAT INTELLIGENCE & RISK COMPLIANCE PORTAL &nbsp;|&nbsp; <b>Investigator: Mohsen Hassan, CFE</b></p>
+    <div class="hero-banner">
+        <h1>Threat Intelligence & Fraud Defense Portal</h1>
+        <p>Leverage curated intelligence for proactive fraud defense and automated risk oversight &nbsp;|&nbsp; <b>Lead Investigator: Mohsen Hassan, CFE</b></p>
     </div>
 """, unsafe_allow_html=True)
 
-st.caption("Report Classification: Confidential – Internal Enterprise Use Only")
+# 2. Key Metrics Row (Similar to platform highlights)
+st.markdown("""
+    <div class="metric-container">
+        <div class="metric-card">
+            <div class="metric-value">7M+</div>
+            <div class="metric-label">Card-testing alerts identified</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">10,000+</div>
+            <div class="metric-label">Online merchants protected</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">$172M</div>
+            <div class="metric-label">Fraud disruption impact</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
-# Main Form
-with st.form("fraud_report_complete_form"):
+# 3. Main Investigation Form
+with st.form("threat_investigation_form"):
     
-    # ---------------------------------------------------------
-    # 1. Investigation Details
-    # ---------------------------------------------------------
     st.header("1. Investigation Details")
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        inv_number = st.text_input("Investigation Number", value="INV-2026-001")
-        inv_type = st.selectbox("Investigation Type", ["Fraud", "Chargeback", "Decline", "Compliance Violation"])
-        inv_date = st.date_input("Investigation Date", datetime.today())
-        
-    with col2:
-        merchant_name = st.text_input("Merchant Name", value="Example Merchant LLC")
-        merchant_id = st.text_input("Merchant ID", value="MID-987654321")
-        mcc = st.text_input("MCC (Merchant Category Code)", value="5999")
-        
-    with col3:
-        acquirer = st.text_input("Responsible Acquirer", value="Global Acquiring Bank")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        inv_number = st.text_input("Investigation Number", value="INV-2026-099")
+        inv_type = st.selectbox("Investigation Type", ["Card Testing", "Digital Skimming", "Payment Fraud", "Compliance Violation"])
+        inv_date = str(st.date_input("Investigation Date", datetime.today()))
+    with c2:
+        merchant_name = st.text_input("Merchant Name", value="Global E-Commerce Outlet")
+        merchant_id = st.text_input("Merchant ID", value="MID-554321980")
+        mcc = st.text_input("MCC Code", value="5967")
+    with c3:
+        acquirer = st.text_input("Responsible Acquirer", value="Acquiring Global Bank")
         investigator = st.text_input("Responsible Investigator", value="Mohsen Hassan, CFE")
-        inv_status = st.selectbox("Investigation Status", ["Open", "Under Review", "Closed"])
+        inv_status = st.selectbox("Investigation Status", ["Open", "Under Review", "Resolved"])
 
-    st.markdown("---")
+    st.header("2. Reason for Investigation & Threat Trigger")
+    reason = st.text_area("Trigger Alert Description", value="Monthly fraud rate exceeded established ecosystem threshold with abnormal card-testing velocity detected from high-risk BINs.")
 
-    # ---------------------------------------------------------
-    # 2. Reason for Investigation
-    # ---------------------------------------------------------
-    st.header("2. Reason for Investigation")
-    reason = st.text_area(
-        "Describe the event or monitoring alert that triggered the investigation:",
-        value="Monthly fraud rate exceeded the established risk threshold and compliance alert notification was triggered."
-    )
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 3. Detailed Event Description and Analysis
-    # ---------------------------------------------------------
-    st.header("3. Detailed Event Description and Analysis")
-    
+    st.header("3. Detailed Event Analysis & Metrics")
     m1, m2, m3, m4 = st.columns(4)
     with m1:
-        total_tx_count = st.number_input("Total Transaction Count", min_value=0, value=1000)
-        total_tx_val = st.number_input("Total Transaction Value ($)", min_value=0.0, value=50000.0)
+        total_tx = st.number_input("Total Tx Count", value=5000)
+        total_val = st.number_input("Total Tx Value ($)", value=250000.0)
     with m2:
-        fraud_tx_count = st.number_input("Fraud Transaction Count", min_value=0, value=25)
-        fraud_tx_val = st.number_input("Fraud Transaction Value ($)", min_value=0.0, value=2500.0)
+        fraud_tx = st.number_input("Fraud Tx Count", value=150)
+        fraud_val = st.number_input("Fraud Tx Value ($)", value=12500.0)
     with m3:
-        cb_count = st.number_input("Chargeback Count", min_value=0, value=10)
-        cb_val = st.number_input("Chargeback Value ($)", min_value=0.0, value=1000.0)
+        cb_count = st.number_input("Chargeback Count", value=45)
+        cb_val = st.number_input("Chargeback Value ($)", value=4500.0)
     with m4:
-        decline_rate = st.number_input("Decline Rate (%)", min_value=0.0, max_value=100.0, value=3.5)
+        decline_rate = st.number_input("Decline Rate (%)", value=4.2)
 
-    # Automated calculations display
-    fraud_rate_count = (fraud_tx_count / total_tx_count * 100) if total_tx_count > 0 else 0.0
-    fraud_rate_val = (fraud_tx_val / total_tx_val * 100) if total_tx_val > 0 else 0.0
-    cb_rate_count = (cb_count / total_tx_count * 100) if total_tx_count > 0 else 0.0
+    f_rate = (fraud_tx / total_tx * 100) if total_tx > 0 else 0.0
+    cb_rate = (cb_count / total_tx * 100) if total_tx > 0 else 0.0
+    st.info(f"⚡ **Calculated Threat KPIs:** Fraud Rate = **{f_rate:.2f}%** | Chargeback Rate = **{cb_rate:.2f}%**")
 
-    st.info(f"📊 **Calculated Threat Metrics:** Fraud Rate (Count) = **{fraud_rate_count:.2f}%** | Fraud Rate (Value) = **{fraud_rate_val:.2f}%** | Chargeback Rate = **{cb_rate_count:.2f}%**")
+    analysis = st.text_area("Detailed Findings & Evidence", value="Anomalous automated bot traffic targeting checkout endpoints. Absence of 3DS step-up verification.")
 
-    analysis_notes = st.text_area(
-        "Findings, Monitoring Alerts, Root Cause & Evidence Reviewed:",
-        value="Spike in high-risk e-commerce transactions originating from anomalous BIN profiles. Lack of robust 3DS verification."
-    )
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 4. Investigation Findings
-    # ---------------------------------------------------------
-    st.header("4. Investigation Findings")
-    col_f1, col_f2 = st.columns([3, 1])
-    
-    with col_f1:
-        identified_issues = st.text_area("Identified Issue(s)", value="Excessive fraudulent volume and absence of velocity check rules.")
-        root_cause = st.text_input("Root Cause", value="Gateway security loophole / missing 3DS integration.")
-        impact = st.text_area("Impact on Merchant or Acquirer", value="Financial exposure and potential scheme program penalties.")
-        standards_involved = st.text_input("Standards or Program Requirements Involved", value="SDP Security Guidelines / Excessive Chargeback Monitoring Program")
-    
-    with col_f2:
-        risk_assessment = st.radio("Risk Assessment", ["Low", "Medium", "High"], index=2)
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 5. Corrective Actions
-    # ---------------------------------------------------------
-    st.header("5. Corrective Actions")
-    st.write("Actions required or implemented to address the findings:")
-    
-    action_1 = st.text_input("Action 1", value="Enforce mandatory 3DS authentication")
-    status_1 = st.selectbox("Status 1", ["Pending", "Completed"], index=0, key="s1")
-    
-    action_2 = st.text_input("Action 2", value="Tighten real-time fraud monitoring thresholds")
-    status_2 = st.selectbox("Status 2", ["Pending", "Completed"], index=1, key="s2")
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 6. Investigation Conclusion
-    # ---------------------------------------------------------
-    st.header("6. Investigation Conclusion")
-    conclusion = st.text_area(
-        "Conclusion Summary:",
-        value="Investigation active. Merchant under temporary processing restriction until 3DS remediation is verified."
-    )
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 7. Follow-up and Ongoing Monitoring
-    # ---------------------------------------------------------
-    st.header("7. Follow-up and Ongoing Monitoring")
-    f_col1, f_col2, f_col3 = st.columns(3)
+    st.header("4. Findings & Risk Assessment")
+    f_col1, f_col2 = st.columns([3, 1])
     with f_col1:
-        monitoring_freq = st.selectbox("Monitoring Frequency", ["Daily", "Weekly", "Monthly"], index=0)
+        issues = st.text_area("Identified Issues", value="Massive card-testing vulnerability and elevated fraud ratios.")
+        root_cause = st.text_input("Root Cause", value="Unprotected gateway API endpoints.")
+        standards = st.text_input("Standards Involved", value="Global Security & Excessive Fraud Monitoring Standards")
     with f_col2:
-        followup_date = st.date_input("Follow-up Review Date", datetime.today())
-    with f_col3:
-        further_investigation = st.selectbox("Further Investigation Required", ["Yes", "No"], index=0)
+        risk_level = st.radio("Risk Assessment Level", ["Low", "Medium", "High"], index=2)
 
-    st.markdown("---")
+    st.header("5. Corrective Actions & Monitoring")
+    action_1 = st.text_input("Corrective Action 1", value="Implement dynamic bot mitigation and mandatory 3DS.")
+    monitoring_freq = st.selectbox("Ongoing Monitoring Frequency", ["Daily", "Weekly", "Monthly"], index=0)
 
-    # ---------------------------------------------------------
-    # 8. Investigation Approval
-    # ---------------------------------------------------------
-    st.header("8. Investigation Approval")
-    a_col1, a_col2 = st.columns(2)
-    with a_col1:
-        prepared_by = st.text_input("Prepared by (Name)", value="Mohsen Hassan, CFE")
-        reviewed_by = st.text_input("Reviewed by (Name)", value="Risk Manager")
-    with a_col2:
-        approved_by = st.text_input("Approved by (Name)", value="Head of Risk & Compliance")
+    st.header("6. Approvals & Sign-off")
+    a1, a2 = st.columns(2)
+    with a1:
+        prepared_by = st.text_input("Prepared By", value="Mohsen Hassan, CFE")
+    with a2:
+        approved_by = st.text_input("Approved By", value="Head of Risk Intelligence")
 
-    st.markdown("---")
+    submitted = st.form_submit_button("📥 Generate & Download PDF Report")
 
-    # ---------------------------------------------------------
-    # 9. Supporting Documentation
-    # ---------------------------------------------------------
-    st.header("9. Supporting Documentation")
-    docs_notes = st.text_area("Attached Evidence / Reports Reference:", value="Transaction logs, alert history records, merchant communications.")
-
-    # Submit Button
-    submitted = st.form_submit_button("💾 Save & Generate Report")
-
+# PDF Generation Logic
 if submitted:
-    st.success("✅ Investigation Report successfully processed and secured by Mohsen Hassan, CFE!")
+    class PDFReport(FPDF):
+        def header(self):
+            self.set_fill_value = (17, 24, 39)
+            self.rect(0, 0, 210, 25, 'F')
+            self.set_text_color(255, 255, 255)
+            self.set_font('helvetica', 'B', 12)
+            self.cell(0, 15, "THREAT INTELLIGENCE & FRAUD INVESTIGATION REPORT", 0, 1, 'C')
+            self.ln(10)
+
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('helvetica', 'I', 8)
+            self.set_text_color(150, 150, 150)
+            self.cell(0, 10, f"Confidential - Internal Enterprise Use Only | Investigator: Mohsen Hassan, CFE", 0, 0, 'C')
+
+    pdf = PDFReport()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    # Content styling
+    pdf.set_text_color(30, 30, 30)
+    pdf.set_font("helvetica", "B", 14)
+    pdf.cell(0, 10, f"Investigation Summary: {inv_number}", 0, 1)
+    
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(0, 6, f"Date: {inv_date} | Type: {inv_type}", 0, 1)
+    pdf.cell(0, 6, f"Merchant: {merchant_name} (ID: {merchant_id}) | MCC: {mcc}", 0, 1)
+    pdf.cell(0, 6, f"Acquirer: {acquirer} | Status: {inv_status}", 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, "2. Reason for Investigation", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.multi_cell(0, 6, reason)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, "3. Event Analysis & Metrics", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(0, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
+    pdf.cell(0, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
+    pdf.cell(0, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
+    pdf.cell(0, 6, f"Decline Rate: {decline_rate}%", 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, "4. Findings & Risk Assessment", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.multi_cell(0, 6, f"Identified Issues: {issues}")
+    pdf.multi_cell(0, 6, f"Root Cause: {root_cause}")
+    pdf.cell(0, 6, f"Risk Assessment Level: {risk_level}", 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, "5. Corrective Actions & Approvals", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(0, 6, f"Action Implemented: {action_1}", 0, 1)
+    pdf.cell(0, 6, f"Monitoring Frequency: {monitoring_freq}", 0, 1)
+    pdf.cell(0, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
+
+    # Output PDF bytes
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+
+    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
+    st.download_button(
+        label="📄 Download Investigation PDF Report",
+        data=pdf_bytes,
+        file_name=f"{inv_number}_Report.pdf",
+        mime="application/pdf"
+    )
