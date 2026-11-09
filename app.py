@@ -6,7 +6,7 @@ from fpdf import FPDF
 # Page Configuration
 st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Enterprise Dark UI (Mastercard Threat Intelligence Vibe)
+# Custom CSS for Enterprise Dark UI & Fixing Input Text Colors to be Clear & Visible
 st.markdown("""
     <style>
     .stApp {
@@ -39,33 +39,6 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Metrics Cards Container */
-    .metric-container {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-    .metric-card {
-        background: #111827;
-        border: 1px solid #374151;
-        padding: 20px;
-        border-radius: 10px;
-        flex: 1;
-        text-align: center;
-    }
-    .metric-value {
-        color: #f59e0b;
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-    .metric-label {
-        color: #9ca3af;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
     /* Section Headers */
     h2 {
         color: #f3f4f6;
@@ -76,14 +49,19 @@ st.markdown("""
         margin-top: 30px;
     }
     
-    /* Inputs & Textareas */
-    .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
-        background-color: #1f2937;
-        color: #f9fafb;
-        border-radius: 8px;
-        border: 1px solid #4b5563;
+    /* Inputs & Textareas - Fixed text color to bright white/dark-contrast for clear visibility */
+    .stTextInput input, .stSelectbox select, .stTextArea textarea, div[data-baseweb="select"] span {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+        font-weight: 600 !important;
     }
     
+    /* Specifically for input boxes background and text inside Streamlit form inputs */
+    input, textarea, select {
+        color: #111827 !important;
+        background-color: #f9fafb !important;
+    }
+
     /* Submit / Generate PDF Button */
     .stButton>button {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
@@ -106,29 +84,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. Hero Banner (Platform Style)
+# 1. Hero Banner (Platform Style - Without metrics numbers)
 st.markdown("""
     <div class="hero-banner">
         <h1>Threat Intelligence & Fraud Defense Portal</h1>
         <p>Leverage curated intelligence for proactive fraud defense and automated risk oversight &nbsp;|&nbsp; <b>Lead Investigator: Mohsen Hassan, CFE</b></p>
-    </div>
-""", unsafe_allow_html=True)
-
-# 2. Key Metrics Row (Similar to platform highlights)
-st.markdown("""
-    <div class="metric-container">
-        <div class="metric-card">
-            <div class="metric-value">7M+</div>
-            <div class="metric-label">Card-testing alerts identified</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value">10,000+</div>
-            <div class="metric-label">Online merchants protected</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value">$172M</div>
-            <div class="metric-label">Fraud disruption impact</div>
-        </div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -195,11 +155,11 @@ with st.form("threat_investigation_form"):
 
     submitted = st.form_submit_button("📥 Generate & Download PDF Report")
 
-# PDF Generation Logic
+# PDF Generation Logic with safe multi_cell widths and padding
 if submitted:
     class PDFReport(FPDF):
         def header(self):
-            self.set_fill_value = (17, 24, 39)
+            self.set_fill_color(17, 24, 39)
             self.rect(0, 0, 210, 25, 'F')
             self.set_text_color(255, 255, 255)
             self.set_font('helvetica', 'B', 12)
@@ -216,46 +176,48 @@ if submitted:
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Content styling
+    # Page width available for printing = 210mm - 20mm (margins) = 190mm
+    effective_width = 190
+    
     pdf.set_text_color(30, 30, 30)
     pdf.set_font("helvetica", "B", 14)
-    pdf.cell(0, 10, f"Investigation Summary: {inv_number}", 0, 1)
+    pdf.cell(effective_width, 10, f"Investigation Summary: {inv_number}", 0, 1)
     
     pdf.set_font("helvetica", "", 10)
-    pdf.cell(0, 6, f"Date: {inv_date} | Type: {inv_type}", 0, 1)
-    pdf.cell(0, 6, f"Merchant: {merchant_name} (ID: {merchant_id}) | MCC: {mcc}", 0, 1)
-    pdf.cell(0, 6, f"Acquirer: {acquirer} | Status: {inv_status}", 0, 1)
+    pdf.cell(effective_width, 6, f"Date: {inv_date} | Type: {inv_type}", 0, 1)
+    pdf.cell(effective_width, 6, f"Merchant: {merchant_name} (ID: {merchant_id}) | MCC: {mcc}", 0, 1)
+    pdf.cell(effective_width, 6, f"Acquirer: {acquirer} | Status: {inv_status}", 0, 1)
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
-    pdf.cell(0, 8, "2. Reason for Investigation", 0, 1)
+    pdf.cell(effective_width, 8, "2. Reason for Investigation", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.multi_cell(0, 6, reason)
+    pdf.multi_cell(effective_width, 6, reason)
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
-    pdf.cell(0, 8, "3. Event Analysis & Metrics", 0, 1)
+    pdf.cell(effective_width, 8, "3. Event Analysis & Metrics", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.cell(0, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
-    pdf.cell(0, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
-    pdf.cell(0, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
-    pdf.cell(0, 6, f"Decline Rate: {decline_rate}%", 0, 1)
+    pdf.cell(effective_width, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
+    pdf.cell(effective_width, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
+    pdf.cell(effective_width, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
+    pdf.cell(effective_width, 6, f"Decline Rate: {decline_rate}%", 0, 1)
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
-    pdf.cell(0, 8, "4. Findings & Risk Assessment", 0, 1)
+    pdf.cell(effective_width, 8, "4. Findings & Risk Assessment", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.multi_cell(0, 6, f"Identified Issues: {issues}")
-    pdf.multi_cell(0, 6, f"Root Cause: {root_cause}")
-    pdf.cell(0, 6, f"Risk Assessment Level: {risk_level}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Identified Issues: {issues}")
+    pdf.multi_cell(effective_width, 6, f"Root Cause: {root_cause}")
+    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_level}", 0, 1)
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
-    pdf.cell(0, 8, "5. Corrective Actions & Approvals", 0, 1)
+    pdf.cell(effective_width, 8, "5. Corrective Actions & Approvals", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.cell(0, 6, f"Action Implemented: {action_1}", 0, 1)
-    pdf.cell(0, 6, f"Monitoring Frequency: {monitoring_freq}", 0, 1)
-    pdf.cell(0, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
+    pdf.cell(effective_width, 6, f"Action Implemented: {action_1}", 0, 1)
+    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq}", 0, 1)
+    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
 
     # Output PDF bytes
     pdf_bytes = pdf.output(dest='S').encode('latin1')
