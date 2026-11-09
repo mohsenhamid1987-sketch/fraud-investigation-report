@@ -274,43 +274,4 @@ if submitted:
     pdf.set_font("helvetica", "", 10)
     pdf.cell(effective_width, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
     pdf.cell(effective_width, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
-    pdf.cell(effective_width, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
-    pdf.cell(effective_width, 6, f"Decline Rate: {decline_rate}%", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Analysis Notes: {analysis_notes}")
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "4. Findings & Risk Assessment", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Issue: {identified_issue}", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Notes: {issues_notes}")
-    pdf.ln(2)
-    pdf.cell(effective_width, 6, f"Root Cause: {root_cause}", 0, 1)
-    pdf.cell(effective_width, 6, f"Standards Involved: {standards_involved}", 0, 1)
-    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_assessment}", 0, 1)
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "5. Corrective Actions & Conclusion", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Action: {c_action_1} (Status: {action_status})", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Action Notes: {action_notes}")
-    pdf.cell(effective_width, 6, f"Conclusion: {conclusion_status}", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Conclusion Notes: {conclusion_notes}")
-    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq} | Further Investigation Required: {followup_req}", 0, 1)
-    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
-
-    # Output PDF bytes safely
-    pdf_output = pdf.output(dest='S')
-    if isinstance(pdf_output, str):
-        pdf_bytes = pdf_output.encode('latin1')
-    else:
-        pdf_bytes = bytes(pdf_output)
-
-    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
-    st.download_button(
-        label="📄 Download Investigation PDF Report",
-        data=pdf_bytes,
-        file_name=f"{inv_number}_Report.pdf",
-        mime="application/pdf"
-    )
+    pdf.cell(effective_width,
