@@ -6,34 +6,33 @@ from fpdf import FPDF
 # Page Configuration
 st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Master-level Enterprise UI & Background Image with Dark Overlay
+# Custom CSS for Clean Light Corporate UI
 st.markdown("""
     <style>
-    /* Main Background with Professional Security / Cyber Threat Background Image & Dark Gradient Overlay */
+    /* Main Background with Clean Corporate Light Theme */
     .stApp {
-        background: linear-gradient(rgba(11, 15, 25, 0.92), rgba(11, 15, 25, 0.95)), 
-                    url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80');
+        background: linear-gradient(rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98)), 
+                    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        color: #f1f5f9;
+        color: #1e293b;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Hero Banner - Clean Corporate Style */
+    /* Hero Banner - Professional Light Style */
     .hero-banner {
-        background: rgba(17, 24, 39, 0.85);
-        backdrop-filter: blur(10px);
+        background: #ffffff;
         padding: 35px;
         border-radius: 12px;
-        border: 1px solid rgba(55, 65, 81, 0.6);
+        border: 1px solid #e2e8f0;
         border-left: 6px solid #f59e0b;
         margin-bottom: 25px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
     
     .hero-banner h1 {
-        color: #ffffff;
+        color: #0f172a;
         font-size: 28px;
         font-weight: 800;
         margin: 0 0 10px 0;
@@ -41,48 +40,49 @@ st.markdown("""
     }
     
     .hero-banner p {
-        color: #9ca3af;
+        color: #475569;
         font-size: 14px;
         margin: 0;
     }
 
     /* Section Headers */
     h2 {
-        color: #f3f4f6;
+        color: #0f172a;
         font-size: 18px;
         font-weight: 600;
-        border-bottom: 1px solid rgba(55, 65, 81, 0.8);
+        border-bottom: 1px solid #cbd5e1;
         padding-bottom: 8px;
         margin-top: 30px;
     }
     
-    /* Inputs & Textareas Styling */
+    /* Inputs & Textareas Styling for Light Theme */
     input, textarea, select {
-        color: #111827 !important;
-        background-color: #f9fafb !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
         border-radius: 6px !important;
     }
 
     /* Submit / Generate PDF Button */
     .stButton>button {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: #0b0f19;
+        color: #ffffff;
         font-weight: 700;
         border-radius: 8px;
         border: none;
         padding: 14px 28px;
         width: 100%;
         font-size: 16px;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        color: #000000;
-        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        color: #ffffff;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
     
-    label { color: #e5e7eb !important; font-weight: 500 !important; font-size: 13px !important; }
+    label { color: #334155 !important; font-weight: 600 !important; font-size: 13px !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -235,83 +235,3 @@ if submitted:
     class PDFReport(FPDF):
         def header(self):
             self.set_fill_color(17, 24, 39)
-            self.rect(0, 0, 210, 25, 'F')
-            self.set_text_color(255, 255, 255)
-            self.set_font('helvetica', 'B', 12)
-            self.cell(0, 15, "THREAT INTELLIGENCE & FRAUD INVESTIGATION REPORT", 0, 1, 'C')
-            self.ln(10)
-
-        def footer(self):
-            self.set_y(-15)
-            self.set_font('helvetica', 'I', 8)
-            self.set_text_color(150, 150, 150)
-            self.cell(0, 10, "Confidential - Internal Enterprise Use Only | Investigator: Mohsen Hassan, CFE", 0, 0, 'C')
-
-    pdf = PDFReport()
-    pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    
-    effective_width = 190
-    
-    pdf.set_text_color(30, 30, 30)
-    pdf.set_font("helvetica", "B", 14)
-    pdf.cell(effective_width, 10, f"Investigation Summary: {inv_number}", 0, 1)
-    
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Date: {inv_date} | Type: {inv_type}", 0, 1)
-    pdf.cell(effective_width, 6, f"Merchant: {merchant_name} (ID: {merchant_id}) | MCC: {mcc}", 0, 1)
-    pdf.cell(effective_width, 6, f"Acquirer: {acquirer} | Status: {inv_status}", 0, 1)
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "2. Reason for Investigation", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Trigger: {reason_trigger}", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Notes: {reason_notes}")
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "3. Event Analysis & Metrics", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
-    pdf.cell(effective_width, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
-    pdf.cell(effective_width, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
-    pdf.cell(effective_width, 6, f"Decline Rate: {decline_rate}%", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Analysis Notes: {analysis_notes}")
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "4. Findings & Risk Assessment", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Issue: {identified_issue}", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Notes: {issues_notes}")
-    pdf.ln(2)
-    pdf.cell(effective_width, 6, f"Root Cause: {root_cause}", 0, 1)
-    pdf.cell(effective_width, 6, f"Standards Involved: {standards_involved}", 0, 1)
-    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_assessment}", 0, 1)
-    pdf.ln(5)
-
-    pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "5. Corrective Actions & Conclusion", 0, 1)
-    pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Action: {c_action_1} (Status: {action_status})", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Action Notes: {action_notes}")
-    pdf.cell(effective_width, 6, f"Conclusion: {conclusion_status}", 0, 1)
-    pdf.multi_cell(effective_width, 6, f"Conclusion Notes: {conclusion_notes}")
-    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq} | Further Investigation Required: {followup_req}", 0, 1)
-    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
-
-    # Output PDF bytes safely
-    pdf_output = pdf.output(dest='S')
-    if isinstance(pdf_output, str):
-        pdf_bytes = pdf_output.encode('latin1')
-    else:
-        pdf_bytes = bytes(pdf_output)
-
-    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
-    st.download_button(
-        label="📄 Download Investigation PDF Report",
-        data=pdf_bytes,
-        file_name=f"{inv_number}_Report.pdf",
-        mime="application/pdf"
-    )
