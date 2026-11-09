@@ -6,33 +6,32 @@ from fpdf import FPDF
 # Page Configuration
 st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Clean Light Corporate UI
+# Custom CSS for Hero Background Image & Clean Light Corporate Theme
 st.markdown("""
     <style>
-    /* Main Background with Clean Corporate Light Theme */
+    /* Main App Background (Clean light for the rest of the page) */
     .stApp {
-        background: linear-gradient(rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98)), 
-                    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        background-color: #f8fafc;
         color: #1e293b;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Hero Banner - Professional Light Style */
+    /* Hero Banner with Fixed Background Image only in the top section */
     .hero-banner {
-        background: #ffffff;
-        padding: 35px;
+        background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.90)), 
+                    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 45px 35px;
         border-radius: 12px;
-        border: 1px solid #e2e8f0;
         border-left: 6px solid #f59e0b;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     
     .hero-banner h1 {
-        color: #0f172a;
+        color: #ffffff;
         font-size: 28px;
         font-weight: 800;
         margin: 0 0 10px 0;
@@ -40,7 +39,7 @@ st.markdown("""
     }
     
     .hero-banner p {
-        color: #475569;
+        color: #cbd5e1;
         font-size: 14px;
         margin: 0;
     }
@@ -77,7 +76,7 @@ st.markdown("""
         transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        background: linear-gradient(135deg, #d97706 100%, #b45309 100%);
         color: #ffffff;
         box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
@@ -86,7 +85,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. Hero Banner
+# 1. Hero Banner with Image Background
 st.markdown("""
     <div class="hero-banner">
         <h1>Threat Intelligence & Fraud Defense Portal</h1>
@@ -235,3 +234,83 @@ if submitted:
     class PDFReport(FPDF):
         def header(self):
             self.set_fill_color(17, 24, 39)
+            self.rect(0, 0, 210, 25, 'F')
+            self.set_text_color(255, 255, 255)
+            self.set_font('helvetica', 'B', 12)
+            self.cell(0, 15, "THREAT INTELLIGENCE & FRAUD INVESTIGATION REPORT", 0, 1, 'C')
+            self.ln(10)
+
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('helvetica', 'I', 8)
+            self.set_text_color(150, 150, 150)
+            self.cell(0, 10, "Confidential - Internal Enterprise Use Only | Investigator: Mohsen Hassan, CFE", 0, 0, 'C')
+
+    pdf = PDFReport()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    
+    effective_width = 190
+    
+    pdf.set_text_color(30, 30, 30)
+    pdf.set_font("helvetica", "B", 14)
+    pdf.cell(effective_width, 10, f"Investigation Summary: {inv_number}", 0, 1)
+    
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(effective_width, 6, f"Date: {inv_date} | Type: {inv_type}", 0, 1)
+    pdf.cell(effective_width, 6, f"Merchant: {merchant_name} (ID: {merchant_id}) | MCC: {mcc}", 0, 1)
+    pdf.cell(effective_width, 6, f"Acquirer: {acquirer} | Status: {inv_status}", 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(effective_width, 8, "2. Reason for Investigation", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(effective_width, 6, f"Trigger: {reason_trigger}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Notes: {reason_notes}")
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(effective_width, 8, "3. Event Analysis & Metrics", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(effective_width, 6, f"Total Transactions: {total_tx:,} (${total_val:,.2f})", 0, 1)
+    pdf.cell(effective_width, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
+    pdf.cell(effective_width, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
+    pdf.cell(effective_width, 6, f"Decline Rate: {decline_rate}%", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Analysis Notes: {analysis_notes}")
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(effective_width, 8, "4. Findings & Risk Assessment", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(effective_width, 6, f"Issue: {identified_issue}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Notes: {issues_notes}")
+    pdf.ln(2)
+    pdf.cell(effective_width, 6, f"Root Cause: {root_cause}", 0, 1)
+    pdf.cell(effective_width, 6, f"Standards Involved: {standards_involved}", 0, 1)
+    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_assessment}", 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(effective_width, 8, "5. Corrective Actions & Conclusion", 0, 1)
+    pdf.set_font("helvetica", "", 10)
+    pdf.cell(effective_width, 6, f"Action: {c_action_1} (Status: {action_status})", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Action Notes: {action_notes}")
+    pdf.cell(effective_width, 6, f"Conclusion: {conclusion_status}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Conclusion Notes: {conclusion_notes}")
+    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq} | Further Investigation Required: {followup_req}", 0, 1)
+    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
+
+    # Output PDF bytes safely
+    pdf_output = pdf.output(dest='S')
+    if isinstance(pdf_output, str):
+        pdf_bytes = pdf_output.encode('latin1')
+    else:
+        pdf_bytes = bytes(pdf_output)
+
+    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
+    st.download_button(
+        label="📄 Download Investigation PDF Report",
+        data=pdf_bytes,
+        file_name=f"{inv_number}_Report.pdf",
+        mime="application/pdf"
+    )
