@@ -77,13 +77,25 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. Hero Banner (Platform Style - Clean Header)
+# 1. Hero Banner
 st.markdown("""
     <div class="hero-banner">
-        <h1>Threat Intelligence & Fraud Defense Portal</h1>
+        <h1>Threat Intelligence & Fraud Investigation Portal</h1>
         <p>Leverage curated intelligence for proactive fraud defense and automated risk oversight &nbsp;|&nbsp; <b>Lead Investigator: Mohsen Hassan, CFE</b></p>
     </div>
 """, unsafe_allow_html=True)
+
+# MCC Options List (Common Merchant Category Codes)
+mcc_list = [
+    "5999 - Miscellaneous and Specialty Retail Stores",
+    "5411 - Grocery Stores and Supermarkets",
+    "5812 - Eating Places and Restaurants",
+    "5967 - Direct Marketing - Incoming Telemarketing Merchants",
+    "6012 - Financial Institutions - Merchandise, Services, and Debt Repayment",
+    "7995 - Betting, Casino Gaming Chips, and Lotteries",
+    "4816 - Computer Network/Information Services",
+    "5732 - Electronics Stores"
+]
 
 # 2. Main Investigation Form
 with st.form("threat_investigation_form"):
@@ -92,19 +104,39 @@ with st.form("threat_investigation_form"):
     c1, c2, c3 = st.columns(3)
     with c1:
         inv_number = st.text_input("Investigation Number", value="INV-2026-099")
-        inv_type = st.selectbox("Investigation Type", ["Card Testing", "Digital Skimming", "Payment Fraud", "Compliance Violation"])
+        inv_type = st.selectbox("Investigation Type", [
+            "Fraud Rate Exceeded Threshold",
+            "Chargeback Spike / ECP Violation",
+            "Transaction Decline Rate Alert",
+            "Card-Testing / Bot Attack",
+            "Digital Skimming / Malware Alert",
+            "Compliance / Standards Violation"
+        ])
         inv_date = str(st.date_input("Investigation Date", datetime.today()))
     with c2:
         merchant_name = st.text_input("Merchant Name", value="Global E-Commerce Outlet")
         merchant_id = st.text_input("Merchant ID", value="MID-554321980")
-        mcc = st.text_input("MCC Code", value="5967")
+        mcc = st.selectbox("MCC (Merchant Category Code)", mcc_list)
     with c3:
-        acquirer = st.text_input("Responsible Acquirer", value="Acquiring Global Bank")
+        acquirer = st.selectbox("Responsible Acquirer", [
+            "Global Acquiring Bank",
+            "First Atlantic Commerce",
+            "Worldpay Processing",
+            "Checkout.com Acquiring",
+            "Cybersource Financial"
+        ])
         investigator = st.text_input("Responsible Investigator", value="Mohsen Hassan, CFE")
-        inv_status = st.selectbox("Investigation Status", ["Open", "Under Review", "Resolved"])
+        inv_status = st.selectbox("Investigation Status", ["Open", "Under Review", "Closed / Resolved"])
 
     st.header("2. Reason for Investigation & Threat Trigger")
-    reason = st.text_area("Trigger Alert Description", value="Monthly fraud rate exceeded established ecosystem threshold with abnormal card-testing velocity detected from high-risk BINs.")
+    reason_trigger = st.selectbox("Trigger Alert Category", [
+        "Monthly fraud rate exceeded established Acquirer threshold",
+        "Chargeback count & ratio increased significantly",
+        "Transaction decline rate exceeded acceptable limits",
+        "Potential violation of Mastercard Standards identified",
+        "Notification of compliance violation received from scheme"
+    ])
+    reason_notes = st.text_area("Reason Notes & Specific Details", value="Monthly fraud rate exceeded threshold accompanied by abnormal card-testing velocity.")
 
     st.header("3. Detailed Event Analysis & Metrics")
     m1, m2, m3, m4 = st.columns(4)
@@ -124,27 +156,68 @@ with st.form("threat_investigation_form"):
     cb_rate = (cb_count / total_tx * 100) if total_tx > 0 else 0.0
     st.info(f"⚡ **Calculated Threat KPIs:** Fraud Rate = **{f_rate:.2f}%** | Chargeback Rate = **{cb_rate:.2f}%**")
 
-    analysis = st.text_area("Detailed Findings & Evidence", value="Anomalous automated bot traffic targeting checkout endpoints. Absence of 3DS step-up verification.")
+    analysis_notes = st.text_area("Analysis & Evidence Notes", value="Anomalous automated bot traffic targeting checkout endpoints. Absence of 3DS step-up verification.")
 
     st.header("4. Findings & Risk Assessment")
     f_col1, f_col2 = st.columns([3, 1])
     with f_col1:
-        issues = st.text_area("Identified Issues", value="Massive card-testing vulnerability and elevated fraud ratios.")
-        root_cause = st.text_input("Root Cause", value="Unprotected gateway API endpoints.")
-        standards = st.text_input("Standards Involved", value="Global Security & Excessive Fraud Monitoring Standards")
+        identified_issue = st.selectbox("Primary Identified Issue", [
+            "Excessive fraudulent volume & missing velocity filters",
+            "Compromised payment gateway security / missing 3DS",
+            "High chargeback exposure leading to ECP risk",
+            "Merchant non-compliance with data security standards"
+        ])
+        issues_notes = st.text_area("Identified Issues Notes", value="Massive card-testing vulnerability and elevated fraud ratios.")
+        
+        root_cause = st.selectbox("Root Cause Category", [
+            "Unprotected gateway API / Checkout endpoints",
+            "Lack of multi-factor or 3DS authentication",
+            "Weak merchant credential management",
+            "Inadequate transaction monitoring and alerting"
+        ])
+        
+        standards_involved = st.selectbox("Standards / Program Involved", [
+            "Mastercard Security Development Program (SDP)",
+            "Excessive Chargeback Program (ECP)",
+            "Data Security Standard (DSS) Compliance",
+            "Global Fraud Monitoring Standards"
+        ])
     with f_col2:
-        risk_level = st.radio("Risk Assessment Level", ["Low", "Medium", "High"], index=2)
+        risk_assessment = st.selectbox("Risk Assessment Level", ["Low", "Medium", "High"], index=2)
 
     st.header("5. Corrective Actions & Monitoring")
-    action_1 = st.text_input("Corrective Action 1", value="Implement dynamic bot mitigation and mandatory 3DS.")
-    monitoring_freq = st.selectbox("Ongoing Monitoring Frequency", ["Daily", "Weekly", "Monthly"], index=0)
+    c_action_1 = st.selectbox("Corrective Action 1", [
+        "Implement mandatory 3DS authentication",
+        "Enhanced Merchant transaction monitoring",
+        "Adjustment of fraud and chargeback monitoring thresholds",
+        "Temporary suspension of Merchant processing",
+        "Merchant education and compliance remediation"
+    ])
+    action_status = st.selectbox("Action Status", ["Pending", "Completed"])
+    action_notes = st.text_area("Corrective Action Notes", value="Enforced 3DS integration and tightened real-time velocity rules.")
 
-    st.header("6. Approvals & Sign-off")
+    st.header("6. Conclusion & Ongoing Monitoring")
+    conclusion_status = st.selectbox("Investigation Conclusion", [
+        "Issue resolved and merchant returned to compliance",
+        "Investigation ongoing with temporary restrictions",
+        "Merchant terminated / processing privileges revoked"
+    ])
+    conclusion_notes = st.text_area("Conclusion Summary Notes", value="Merchant is currently under temporary restriction pending final 3DS verification.")
+    
+    monitoring_freq = st.selectbox("Monitoring Frequency", ["Daily", "Weekly", "Monthly"], index=0)
+    followup_req = st.selectbox("Further Investigation Required", ["No", "Yes"], index=0)
+
+    st.header("7. Approvals & Sign-off")
     a1, a2 = st.columns(2)
     with a1:
         prepared_by = st.text_input("Prepared By", value="Mohsen Hassan, CFE")
     with a2:
-        approved_by = st.text_input("Approved By", value="Head of Risk Intelligence")
+        approved_by = st.selectbox("Approved By", [
+            "Head of Risk & Compliance",
+            "Director of Fraud Operations",
+            "Chief Risk Officer (CRO)",
+            "Global Acquiring Risk Manager"
+        ])
 
     submitted = st.form_submit_button("📥 Generate & Download PDF Report")
 
@@ -184,7 +257,8 @@ if submitted:
     pdf.set_font("helvetica", "B", 12)
     pdf.cell(effective_width, 8, "2. Reason for Investigation", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.multi_cell(effective_width, 6, reason)
+    pdf.cell(effective_width, 6, f"Trigger: {reason_trigger}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Notes: {reason_notes}")
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
@@ -194,34 +268,26 @@ if submitted:
     pdf.cell(effective_width, 6, f"Fraud Transactions: {fraud_tx:,} (${fraud_val:,.2f}) - Rate: {f_rate:.2f}%", 0, 1)
     pdf.cell(effective_width, 6, f"Chargebacks: {cb_count} (${cb_val:,.2f}) - Rate: {cb_rate:.2f}%", 0, 1)
     pdf.cell(effective_width, 6, f"Decline Rate: {decline_rate}%", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Analysis Notes: {analysis_notes}")
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
     pdf.cell(effective_width, 8, "4. Findings & Risk Assessment", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.multi_cell(effective_width, 6, f"Identified Issues: {issues}")
-    pdf.multi_cell(effective_width, 6, f"Root Cause: {root_cause}")
-    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_level}", 0, 1)
+    pdf.cell(effective_width, 6, f"Issue: {identified_issue}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Notes: {issues_notes}")
+    pdf.ln(2)
+    pdf.cell(effective_width, 6, f"Root Cause: {root_cause}", 0, 1)
+    pdf.cell(effective_width, 6, f"Standards Involved: {standards_involved}", 0, 1)
+    pdf.cell(effective_width, 6, f"Risk Assessment Level: {risk_assessment}", 0, 1)
     pdf.ln(5)
 
     pdf.set_font("helvetica", "B", 12)
-    pdf.cell(effective_width, 8, "5. Corrective Actions & Approvals", 0, 1)
+    pdf.cell(effective_width, 8, "5. Corrective Actions & Conclusion", 0, 1)
     pdf.set_font("helvetica", "", 10)
-    pdf.cell(effective_width, 6, f"Action Implemented: {action_1}", 0, 1)
-    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq}", 0, 1)
-    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
-
-    # Output PDF bytes safely
-    pdf_output = pdf.output(dest='S')
-    if isinstance(pdf_output, str):
-        pdf_bytes = pdf_output.encode('latin1')
-    else:
-        pdf_bytes = bytes(pdf_output)
-
-    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
-    st.download_button(
-        label="📄 Download Investigation PDF Report",
-        data=pdf_bytes,
-        file_name=f"{inv_number}_Report.pdf",
-        mime="application/pdf"
-    )
+    pdf.cell(effective_width, 6, f"Action: {c_action_1} (Status: {action_status})", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Action Notes: {action_notes}")
+    pdf.cell(effective_width, 6, f"Conclusion: {conclusion_status}", 0, 1)
+    pdf.multi_cell(effective_width, 6, f"Conclusion Notes: {conclusion_notes}")
+    pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq} | Further Investigation Required: {followup_req}", 0, 1)
+    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By:
