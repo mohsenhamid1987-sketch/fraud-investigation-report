@@ -6,24 +6,30 @@ from fpdf import FPDF
 # Page Configuration
 st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Enterprise Dark UI & Clear Input Text Colors
+# Custom CSS for Master-level Enterprise UI & Background Image with Dark Overlay
 st.markdown("""
     <style>
+    /* Main Background with Professional Security / Cyber Threat Background Image & Dark Gradient Overlay */
     .stApp {
-        background-color: #0b0f19;
+        background: linear-gradient(rgba(11, 15, 25, 0.92), rgba(11, 15, 25, 0.95)), 
+                    url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         color: #f1f5f9;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
-    /* Hero Banner */
+    /* Hero Banner - Clean Corporate Style */
     .hero-banner {
-        background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        background: rgba(17, 24, 39, 0.85);
+        backdrop-filter: blur(10px);
         padding: 35px;
         border-radius: 12px;
-        border: 1px solid #374151;
+        border: 1px solid rgba(55, 65, 81, 0.6);
         border-left: 6px solid #f59e0b;
         margin-bottom: 25px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
     
     .hero-banner h1 {
@@ -31,6 +37,7 @@ st.markdown("""
         font-size: 28px;
         font-weight: 800;
         margin: 0 0 10px 0;
+        letter-spacing: -0.5px;
     }
     
     .hero-banner p {
@@ -44,15 +51,16 @@ st.markdown("""
         color: #f3f4f6;
         font-size: 18px;
         font-weight: 600;
-        border-bottom: 1px solid #374151;
+        border-bottom: 1px solid rgba(55, 65, 81, 0.8);
         padding-bottom: 8px;
         margin-top: 30px;
     }
     
-    /* Inputs & Textareas - Clear text color for visibility */
+    /* Inputs & Textareas Styling */
     input, textarea, select {
         color: #111827 !important;
         background-color: #f9fafb !important;
+        border-radius: 6px !important;
     }
 
     /* Submit / Generate PDF Button */
@@ -65,27 +73,28 @@ st.markdown("""
         padding: 14px 28px;
         width: 100%;
         font-size: 16px;
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
         color: #000000;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
     }
     
-    label { color: #d1d5db !important; font-weight: 500 !important; font-size: 13px !important; }
+    label { color: #e5e7eb !important; font-weight: 500 !important; font-size: 13px !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # 1. Hero Banner
 st.markdown("""
     <div class="hero-banner">
-        <h1>Threat Intelligence & Fraud Investigation Portal</h1>
+        <h1>Threat Intelligence & Fraud Defense Portal</h1>
         <p>Leverage curated intelligence for proactive fraud defense and automated risk oversight &nbsp;|&nbsp; <b>Lead Investigator: Mohsen Hassan, CFE</b></p>
     </div>
 """, unsafe_allow_html=True)
 
-# MCC Options List (Common Merchant Category Codes)
+# MCC Options List
 mcc_list = [
     "5999 - Miscellaneous and Specialty Retail Stores",
     "5411 - Grocery Stores and Supermarkets",
@@ -133,7 +142,7 @@ with st.form("threat_investigation_form"):
         "Monthly fraud rate exceeded established Acquirer threshold",
         "Chargeback count & ratio increased significantly",
         "Transaction decline rate exceeded acceptable limits",
-        "Potential violation of Mastercard Standards identified",
+        "Potential violation of Standards identified",
         "Notification of compliance violation received from scheme"
     ])
     reason_notes = st.text_area("Reason Notes & Specific Details", value="Monthly fraud rate exceeded threshold accompanied by abnormal card-testing velocity.")
@@ -177,7 +186,7 @@ with st.form("threat_investigation_form"):
         ])
         
         standards_involved = st.selectbox("Standards / Program Involved", [
-            "Mastercard Security Development Program (SDP)",
+            "Security Development Program (SDP)",
             "Excessive Chargeback Program (ECP)",
             "Data Security Standard (DSS) Compliance",
             "Global Fraud Monitoring Standards"
@@ -236,7 +245,7 @@ if submitted:
             self.set_y(-15)
             self.set_font('helvetica', 'I', 8)
             self.set_text_color(150, 150, 150)
-            self.cell(0, 10, f"Confidential - Internal Enterprise Use Only | Investigator: Mohsen Hassan, CFE", 0, 0, 'C')
+            self.cell(0, 10, "Confidential - Internal Enterprise Use Only | Investigator: Mohsen Hassan, CFE", 0, 0, 'C')
 
     pdf = PDFReport()
     pdf.add_page()
@@ -290,4 +299,19 @@ if submitted:
     pdf.cell(effective_width, 6, f"Conclusion: {conclusion_status}", 0, 1)
     pdf.multi_cell(effective_width, 6, f"Conclusion Notes: {conclusion_notes}")
     pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq} | Further Investigation Required: {followup_req}", 0, 1)
-    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By:
+    pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
+
+    # Output PDF bytes safely
+    pdf_output = pdf.output(dest='S')
+    if isinstance(pdf_output, str):
+        pdf_bytes = pdf_output.encode('latin1')
+    else:
+        pdf_bytes = bytes(pdf_output)
+
+    st.success("🎉 Report generated successfully! Click below to download your official PDF.")
+    st.download_button(
+        label="📄 Download Investigation PDF Report",
+        data=pdf_bytes,
+        file_name=f"{inv_number}_Report.pdf",
+        mime="application/pdf"
+    )
