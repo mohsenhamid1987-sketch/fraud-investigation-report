@@ -3,13 +3,101 @@ import pandas as pd
 from datetime import datetime
 
 # Page Configuration
-st.set_page_config(page_title="Fraud & Loss Control Investigation Report", layout="wide")
+st.set_page_config(page_title="Fraud & Loss Control Investigation Report - Mastercard Style", layout="wide")
 
-# Main Title & Header with Professional Branding
-st.title("🛡️ FRAUD AND LOSS CONTROL INVESTIGATION REPORT")
-st.markdown("### **Investigator:** Mohsen Hassan, CFE")
+# Custom CSS for Mastercard Branding
+st.markdown("""
+    <style>
+    /* Main Background & Font Styling */
+    .stApp {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* Header Styling */
+    h1 {
+        color: #1a1f2c;
+        font-weight: 700;
+        border-bottom: 3px solid #EB001B;
+        padding-bottom: 10px;
+    }
+    
+    h2, h3 {
+        color: #252b37;
+        font-weight: 600;
+    }
+    
+    /* Mastercard Banner Accent */
+    .mastercard-banner {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #1a1f2c 0%, #2d3748 100%);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .mc-circles {
+        display: flex;
+        margin-right: 15px;
+    }
+    .circle-red {
+        width: 35px;
+        height: 35px;
+        background-color: #EB001B;
+        border-radius: 50%;
+        opacity: 0.9;
+    }
+    .circle-yellow {
+        width: 35px;
+        height: 35px;
+        background-color: #F79E1B;
+        border-radius: 50%;
+        margin-left: -15px;
+        opacity: 0.85;
+    }
+    
+    /* Custom Metric / Info Boxes */
+    .stInfo {
+        background-color: #fff8f0;
+        border-left: 5px solid #F79E1B;
+        color: #1a1f2c;
+    }
+    
+    /* Buttons Styling */
+    .stButton>button {
+        background-color: #EB001B;
+        color: white;
+        font-weight: bold;
+        border-radius: 6px;
+        border: none;
+        padding: 10px 24px;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #c50015;
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Top Header with Mastercard-inspired visual touch
+st.markdown("""
+    <div class="mastercard-banner">
+        <div class="mc-circles">
+            <div class="circle-red"></div>
+            <div class="circle-yellow"></div>
+        </div>
+        <div>
+            <h2 style="color: white; margin: 0; font-size: 24px;">FRAUD AND LOSS CONTROL INVESTIGATION REPORT</h2>
+            <p style="margin: 0; color: #a0aec0; font-size: 14px;">Mastercard Standards & Compliance Oversight | <b>Investigator: Mohsen Hassan, CFE</b></p>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
 st.caption("Report Classification: Confidential – Internal Use Only")
-st.markdown("---")
 
 # Main Form
 with st.form("fraud_report_complete_form"):
@@ -136,27 +224,4 @@ with st.form("fraud_report_complete_form"):
 
     st.markdown("---")
 
-    # ---------------------------------------------------------
-    # 8. Investigation Approval
-    # ---------------------------------------------------------
-    st.header("8. Investigation Approval")
-    a_col1, a_col2 = st.columns(2)
-    with a_col1:
-        prepared_by = st.text_input("Prepared by (Name)", value="Mohsen Hassan, CFE")
-        reviewed_by = st.text_input("Reviewed by (Name)", value="Risk Manager")
-    with a_col2:
-        approved_by = st.text_input("Approved by (Name)", value="Head of Risk & Compliance")
-
-    st.markdown("---")
-
-    # ---------------------------------------------------------
-    # 9. Supporting Documentation
-    # ---------------------------------------------------------
-    st.header("9. Supporting Documentation")
-    docs_notes = st.text_area("Attached Evidence / Reports Reference:", value="Transaction monitoring logs, Acquirer alert history, Merchant communication records.")
-
-    # Submit Button
-    submitted = st.form_submit_button("💾 Save & Generate Report")
-
-if submitted:
-    st.success("✅ The Fraud Investigation Report has been successfully saved and processed by Mohsen Hassan, CFE!")
+    #
