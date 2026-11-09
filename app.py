@@ -6,7 +6,7 @@ from fpdf import FPDF
 # Page Configuration
 st.set_page_config(page_title="Threat Intelligence & Fraud Investigation Portal", layout="wide")
 
-# Custom CSS for Enterprise Dark UI & Fixing Input Text Colors to be Clear & Visible
+# Custom CSS for Enterprise Dark UI & Clear Input Text Colors
 st.markdown("""
     <style>
     .stApp {
@@ -49,14 +49,7 @@ st.markdown("""
         margin-top: 30px;
     }
     
-    /* Inputs & Textareas - Fixed text color to bright white/dark-contrast for clear visibility */
-    .stTextInput input, .stSelectbox select, .stTextArea textarea, div[data-baseweb="select"] span {
-        color: #000000 !important;
-        background-color: #ffffff !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Specifically for input boxes background and text inside Streamlit form inputs */
+    /* Inputs & Textareas - Clear text color for visibility */
     input, textarea, select {
         color: #111827 !important;
         background-color: #f9fafb !important;
@@ -84,7 +77,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. Hero Banner (Platform Style - Without metrics numbers)
+# 1. Hero Banner (Platform Style - Clean Header)
 st.markdown("""
     <div class="hero-banner">
         <h1>Threat Intelligence & Fraud Defense Portal</h1>
@@ -92,7 +85,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 3. Main Investigation Form
+# 2. Main Investigation Form
 with st.form("threat_investigation_form"):
     
     st.header("1. Investigation Details")
@@ -155,7 +148,7 @@ with st.form("threat_investigation_form"):
 
     submitted = st.form_submit_button("📥 Generate & Download PDF Report")
 
-# PDF Generation Logic with safe multi_cell widths and padding
+# PDF Generation Logic
 if submitted:
     class PDFReport(FPDF):
         def header(self):
@@ -176,7 +169,6 @@ if submitted:
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # Page width available for printing = 210mm - 20mm (margins) = 190mm
     effective_width = 190
     
     pdf.set_text_color(30, 30, 30)
@@ -219,8 +211,12 @@ if submitted:
     pdf.cell(effective_width, 6, f"Monitoring Frequency: {monitoring_freq}", 0, 1)
     pdf.cell(effective_width, 6, f"Prepared By: {prepared_by} | Approved By: {approved_by}", 0, 1)
 
-    # Output PDF bytes
-    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    # Output PDF bytes safely
+    pdf_output = pdf.output(dest='S')
+    if isinstance(pdf_output, str):
+        pdf_bytes = pdf_output.encode('latin1')
+    else:
+        pdf_bytes = bytes(pdf_output)
 
     st.success("🎉 Report generated successfully! Click below to download your official PDF.")
     st.download_button(
